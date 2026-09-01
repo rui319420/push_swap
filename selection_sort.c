@@ -12,6 +12,8 @@
 
 #include "push_swap.h"
 
+#define SIMPLE_MAX_SIZE 5
+
 static void	set_indexes(t_stack *a)
 {
 	t_node	*node;
@@ -73,7 +75,7 @@ static int	min_position(t_stack *a)
 	return (min_pos);
 }
 
-static void	sort_five(t_stack *a, t_stack *b)
+static void	sort_simple(t_stack *a, t_stack *b)
 {
 	int	position;
 
@@ -100,8 +102,8 @@ void	sort_stack(t_stack *a, t_stack *b)
 		swap(a, 'a');
 	else if (a->size == 3)
 		sort_three(a);
-	else if (a->size <= 5)
-		sort_five(a, b);
+	else if (a->size <= SIMPLE_MAX_SIZE)
+		sort_simple(a, b);
 	else
 		radix_sort(a, b);
 }

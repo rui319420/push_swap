@@ -30,3 +30,27 @@ void	free_stack(t_stack *stack)
 	}
 	stack->size = 0;
 }
+
+int	stack_disorder_percentage(t_stack *stack)
+{
+	t_node	*left;
+	t_node	*right;
+	long	inversions;
+	long	pairs;
+
+	inversions = 0;
+	left = stack->top;
+	while (left)
+	{
+		right = left->next;
+		while (right)
+		{
+			if (left->index > right->index)
+				inversions++;
+			right = right->next;
+		}
+		left = left->next;
+	}
+	pairs = (long)stack->size * (stack->size - 1) / 2;
+	return ((int)(inversions * 100 / pairs));
+}

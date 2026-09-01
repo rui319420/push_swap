@@ -12,14 +12,21 @@
 
 #include "push_swap.h"
 
-static int	chunk_range(int size)
+#define MEDIUM_MAX_SIZE 100
+#define MEDIUM_DISORDER_LIMIT 40
+#define MEDIUM_RANGE_FACTOR 14
+#define COMPLEX_RANGE_FACTOR 18
+
+int	stack_disorder_percentage(t_stack *stack);
+
+static int	chunk_range(int size, int factor)
 {
 	int	root;
 
 	root = 1;
 	while ((root + 1) * (root + 1) <= size)
 		root++;
-	return (root * 14 / 10);
+	return (root * factor / 10);
 }
 
 static int	max_position(t_stack *stack)
@@ -37,8 +44,8 @@ static int	max_position(t_stack *stack)
 	{
 		if (node->index > max_index)
 		{
-			max_index = node->index;
 			max_position = position;
+			max_index = node->index;
 		}
 		position++;
 		node = node->next;
@@ -88,6 +95,14 @@ static void	restore_stack(t_stack *a, t_stack *b)
 
 void	radix_sort(t_stack *a, t_stack *b)
 {
-	push_chunks(a, b, chunk_range(a->size));
+	int	disorder;
+	int	factor;
+
+	disorder = stack_disorder_percentage(a);
+	if (a->size <= MEDIUM_MAX_SIZE || disorder <= MEDIUM_DISORDER_LIMIT)
+		factor = MEDIUM_RANGE_FACTOR;
+	else
+		factor = COMPLEX_RANGE_FACTOR;
+	push_chunks(a, b, chunk_range(a->size, factor));
 	restore_stack(a, b);
 }
