@@ -15,7 +15,9 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 PRINTF_DIR = ft_printf
 PRINTF = $(PRINTF_DIR)/libftprintf.a
-SRCS = main.c push_swap.c parse.c push.c rotate.c reverse_rotate.c selection_sort.c radix_sort.c
+SRCS = main.c push_swap.c parse.c push.c rotate.c reverse_rotate.c \
+	operation_dispatch.c index_stack.c strategy.c selection_sort.c \
+	small_sort.c medium_sort.c radix_sort.c bench.c bench_format.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)

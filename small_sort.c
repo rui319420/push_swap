@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   selection_sort.c                                   :+:      :+:    :+:   */
+/*   small_sort.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rishiyam <rishiyam@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/08/25 19:21:56 by rishiyam          #+#    #+#             */
-/*   Updated: 2026/09/01 21:30:41 by rishiyam         ###   ########.fr       */
+/*   Created: 2026/08/25 19:37:12 by rishiyam          #+#    #+#             */
+/*   Updated: 2026/09/01 21:35:09 by rishiyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,30 +38,49 @@ static int	minimum_position(t_stack *stack)
 	return (min_position);
 }
 
-static void	move_minimum_to_top(t_stack *a, t_stack *b, int *counts)
+static void	sort_three(t_stack *a, t_stack *b, int *counts)
 {
-	int	position;
-	int	reverse_count;
+	int	first;
+	int	second;
+	int	third;
 
-	position = minimum_position(a);
-	if (position <= a->size / 2)
-		while (position-- > 0)
-			run_operation(a, b, "ra", counts);
-	else
-	{
-		reverse_count = a->size - position;
-		while (reverse_count-- > 0)
-			run_operation(a, b, "rra", counts);
-	}
+	first = a->top->index;
+	second = a->top->next->index;
+	third = a->top->next->next->index;
+	if (first > second && first > third)
+		run_operation(a, b, "ra", counts);
+	else if (second > first && second > third)
+		run_operation(a, b, "rra", counts);
+	if (a->top->index > a->top->next->index)
+		run_operation(a, b, "sa", counts);
 }
 
-void	simple_strategy(t_stack *a, t_stack *b, int *counts)
+static void	sort_five(t_stack *a, t_stack *b, int *counts)
 {
-	while (a->size)
+	int	position;
+
+	while (a->size > 3)
 	{
-		move_minimum_to_top(a, b, counts);
+		position = minimum_position(a);
+		if (position <= a->size / 2)
+			while (position-- > 0)
+				run_operation(a, b, "ra", counts);
+		else
+			while (position++ < a->size)
+				run_operation(a, b, "rra", counts);
 		run_operation(a, b, "pb", counts);
 	}
+	sort_three(a, b, counts);
 	while (b->size)
 		run_operation(a, b, "pa", counts);
+}
+
+void	small_sort(t_stack *a, t_stack *b, int *counts)
+{
+	if (a->size == 2)
+		run_operation(a, b, "sa", counts);
+	else if (a->size == 3)
+		sort_three(a, b, counts);
+	else
+		sort_five(a, b, counts);
 }

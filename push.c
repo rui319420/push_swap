@@ -27,7 +27,7 @@ void	push(t_stack *from, t_stack *to, char name)
 	to->size++;
 	if (name == 'a')
 		ft_printf("pa\n");
-	else
+	else if (name == 'b')
 		ft_printf("pb\n");
 }
 
@@ -43,6 +43,6 @@ void	swap(t_stack *stack, char name)
 	stack->top->next = first;
 	if (name == 'a')
 		ft_printf("sa\n");
-	else
+	else if (name == 'b')
 		ft_printf("sb\n");
 }

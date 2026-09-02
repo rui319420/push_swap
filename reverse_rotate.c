@@ -29,6 +29,6 @@ void	reverse_rotate(t_stack *stack, char name)
 	stack->top = last;
 	if (name == 'a')
 		ft_printf("rra\n");
-	else
+	else if (name == 'b')
 		ft_printf("rrb\n");
 }

@@ -1,34 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rotate.c                                           :+:      :+:    :+:   */
+/*   index_stack.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rishiyam <rishiyam@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/08/03 19:27:35 by rishiyam          #+#    #+#             */
-/*   Updated: 2026/08/29 22:15:34 by rishiyam         ###   ########.fr       */
+/*   Created: 2026/08/25 18:42:17 by rishiyam          #+#    #+#             */
+/*   Updated: 2026/09/01 20:31:06 by rishiyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-#include "ft_printf/ft_printf.h"
 
-void	rotate(t_stack *stack, char name)
+void	index_stack(t_stack *stack)
 {
-	t_node	*first;
-	t_node	*last;
+	t_node	*node;
+	t_node	*other;
 
-	if (stack->size < 2)
-		return ;
-	first = stack->top;
-	stack->top = first->next;
-	first->next = NULL;
-	last = stack->top;
-	while (last->next)
-		last = last->next;
-	last->next = first;
-	if (name == 'a')
-		ft_printf("ra\n");
-	else if (name == 'b')
-		ft_printf("rb\n");
+	node = stack->top;
+	while (node)
+	{
+		node->index = 0;
+		other = stack->top;
+		while (other)
+		{
+			if (other->value < node->value)
+				node->index++;
+			other = other->next;
+		}
+		node = node->next;
+	}
 }

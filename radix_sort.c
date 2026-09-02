@@ -5,104 +5,56 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rishiyam <rishiyam@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/08/03 19:26:23 by rishiyam          #+#    #+#             */
-/*   Updated: 2026/08/31 17:23:40 by rishiyam         ###   ########.fr       */
+/*   Created: 2026/08/25 20:07:45 by rishiyam          #+#    #+#             */
+/*   Updated: 2026/09/01 21:44:16 by rishiyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-#define MEDIUM_MAX_SIZE 100
-#define MEDIUM_DISORDER_LIMIT 40
-#define MEDIUM_RANGE_FACTOR 14
-#define COMPLEX_RANGE_FACTOR 18
+void	run_operation(t_stack *a, t_stack *b, char *name, int *counts);
 
-int	stack_disorder_percentage(t_stack *stack);
-
-static int	chunk_range(int size, int factor)
+static int	required_bits(int size)
 {
-	int	root;
+	int	bits;
 
-	root = 1;
-	while ((root + 1) * (root + 1) <= size)
-		root++;
-	return (root * factor / 10);
+	bits = 0;
+	while ((size - 1) >> bits)
+		bits++;
+	return (bits);
 }
 
-static int	max_position(t_stack *stack)
+void	complex_strategy(t_stack *a, t_stack *b, int *counts)
 {
-	t_node	*node;
-	int		position;
-	int		max_position;
-	int		max_index;
+	int	bit;
+	int	remaining;
+	int	size;
 
-	node = stack->top;
-	position = 0;
-	max_position = 0;
-	max_index = node->index;
-	while (node)
+	bit = 0;
+	size = a->size;
+	while (bit < required_bits(size))
 	{
-		if (node->index > max_index)
+		remaining = size;
+		while (remaining-- > 0)
 		{
-			max_position = position;
-			max_index = node->index;
+			if ((a->top->index >> bit) & 1)
+				run_operation(a, b, "ra", counts);
+			else
+				run_operation(a, b, "pb", counts);
 		}
-		position++;
-		node = node->next;
-	}
-	return (max_position);
-}
-
-static void	push_chunks(t_stack *a, t_stack *b, int range)
-{
-	int	pushed;
-
-	pushed = 0;
-	while (a->size)
-	{
-		if (a->top->index <= pushed)
-		{
-			push(a, b, 'b');
-			rotate(b, 'b');
-			pushed++;
-		}
-		else if (a->top->index <= pushed + range)
-		{
-			push(a, b, 'b');
-			pushed++;
-		}
-		else
-			rotate(a, 'a');
-	}
-}
-
-static void	restore_stack(t_stack *a, t_stack *b)
-{
-	int	position;
-
-	while (b->size)
-	{
-		position = max_position(b);
-		if (position <= b->size / 2)
-			while (position-- > 0)
-				rotate(b, 'b');
-		else
-			while (position++ < b->size)
-				reverse_rotate(b, 'b');
-		push(b, a, 'a');
+		while (b->size)
+			run_operation(a, b, "pa", counts);
+		bit++;
 	}
 }
 
 void	radix_sort(t_stack *a, t_stack *b)
 {
-	int	disorder;
-	int	factor;
+	int	counts[11];
+	int	index;
 
-	disorder = stack_disorder_percentage(a);
-	if (a->size <= MEDIUM_MAX_SIZE || disorder <= MEDIUM_DISORDER_LIMIT)
-		factor = MEDIUM_RANGE_FACTOR;
-	else
-		factor = COMPLEX_RANGE_FACTOR;
-	push_chunks(a, b, chunk_range(a->size, factor));
-	restore_stack(a, b);
+	index = 0;
+	while (index < 11)
+		counts[index++] = 0;
+	complex_strategy(a, b, counts);
 }
